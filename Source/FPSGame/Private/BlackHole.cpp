@@ -4,6 +4,7 @@
 #include "Components/SphereComponent.h"
 #include "Components/StaticMeshComponent.h"
 
+// Test change!
 
 // Sets default values
 ABlackHole::ABlackHole()
