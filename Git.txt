@@ -1,0 +1,74 @@
+git status
+ - Shows changes that are staged for commit
+ - Shows changes that are not staged for commit (you can stage files for commit with "git add <file>")
+ - Shows Untracked files that are not in the repository (you can add them to the repo with "git add <file>")
+
+A commit is like a submited changelist.
+
+The staging environment (used to be called the index) represents the files that will be included in the next commit, much like a pending changelist.
+ - "git add <file>" to stage a new/modified file for commit
+ - add any other changed files that you want to submit (commit) at the same time
+
+Staged files are not in a commit yet!
+
+Once all the changes files have been added to the staging environment you can add them to a commit them with "git commit"
+ - git commit -m "This is a description of my commit!"
+ - The committed files are not yet in the remote repository!
+ - Your local branch is now ahead of "origin/master" by 1 commit.
+ - You can make further commits to the local branch as needed.
+
+git log
+ - Shows the commit logs
+
+To show the files contained within a commit:
+ - "git show --stat --oneline HEAD"
+ - "git show --name-only --oneline HEAD"
+
+This shows the latest commit. To view a different commit, replace HEAD with the SHA1 hash of the commit (get from git log)
+
+To work on a new feature without affecting the main project, create a branch:
+ - "git checkout -b <my branch name>" creates a new branch and automatically 'checks you out' on it.
+ - "git branch" to display all the branches and indicate which one you are in.
+
+To push changes:
+ - "git push"
+ - "git push origin"
+ - "git push origin master"
+ - "git push origin HEAD"
+
+To push changes to a new branch (that GitHub will create for you):
+ - "git push origin yournewbranchname"
+
+"origin" is just shorthand for the url of the remote repository. You can use it instead of typing "https://github.com/blaa/myrepository.git"
+
+Create a pull request to tell the repo owner that you want to have the commits made to your branch merged into the master branch.
+
+To update the local repository to the latest commit (and merge changes):
+ - "git pull"
+
+To merge another branch into your active branch:
+ - "git merge <branch>"
+
+Both git pull and git merge will try to auto-merge changes. If there are any conflicts you must manually merge the files shown by git. After changing the files, mark them as merged with "git add <filename>".
+
+Before merging changes you can preview them with:
+- "git diff <source_branch> <target_branch>"
+
+To revert local changes:
+ - "git checkout -- <filename>"
+Changes already added to the index (staging environment), and new files, are kept.
+
+To revert all local changes and commits, fetch the latest from the server, and point your local master branch at it:
+ - "git fetch origin"
+ - "git reset --hard origin/master"
+
+To delete a file from the repository AND the local file system:
+ - "git rm <filename>"
+
+To delete a file from the repository but NOT delete it from the local file system:
+ - "git rm --cached <filename>"
+
+Don't forget to commit the staged deletion:
+ - git commit -m "Deleted a file"
+
+
