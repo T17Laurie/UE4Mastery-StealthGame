@@ -4,7 +4,11 @@
 #include "Perception/PawnSensingComponent.h"
 #include "DrawDebugHelpers.h"
 #include "Engine/World.h"
+#include "Engine/TargetPoint.h"
 #include "FPSGameMode.h"
+#include "FPSAIGuardController.h"
+
+#pragma optimize ("", off)
 
 
 // Sets default values
@@ -26,6 +30,17 @@ void AFPSAIGuard::BeginPlay()
 	Super::BeginPlay();
 	
 	OriginalRotation = GetActorRotation();
+
+	GuardController = Cast<AFPSAIGuardController>(GetController());
+
+	if (bPatrol && GuardController != nullptr && NavTargets.Num() > 0)
+	{
+		GuardController->SetWaypoints(NavTargets, PatrolWaitTime);
+		if (GuardController->GoToNextWaypoint())
+		{
+			SetGuardState(EAIState::Patrolling);
+		}
+	}
 }
 
 void AFPSAIGuard::OnPawnSeen(APawn* SeenPawn)
@@ -42,6 +57,11 @@ void AFPSAIGuard::OnPawnSeen(APawn* SeenPawn)
 		GM->CompleteMission(SeenPawn, false);
 	}
 
+	if (GuardState == EAIState::Patrolling && GuardController != nullptr)
+	{
+		GuardController->Wait();
+	}
+
 	SetGuardState(EAIState::Alerted);
 }
 
@@ -49,6 +69,11 @@ void AFPSAIGuard::OnNoiseHeard(APawn* HeardPawn, const FVector& Location, float 
 {
 	if (GuardState == EAIState::Alerted)
 		return;
+
+	if (GuardState == EAIState::Patrolling && GuardController != nullptr)
+	{
+		GuardController->Wait();
+	}
 
 	DrawDebugSphere(GetWorld(), Location, 32.0f, 12, FColor::Green, false, 10.0f);
 
@@ -73,13 +98,24 @@ void AFPSAIGuard::ResetOrientation()
 		return;
 
 	SetActorRotation(OriginalRotation);
-	SetGuardState(EAIState::Idle);
+
+	if (bPatrol && NavTargets.Num() > 0 && GuardController != nullptr)
+	{
+		GuardController->ContinuePatrol();
+		SetGuardState(EAIState::Patrolling);
+	}
+	else
+	{
+		SetGuardState(EAIState::Idle);
+	}
 }
 
 void AFPSAIGuard::SetGuardState(EAIState newState)
 {
 	if (GuardState == newState)
 		return;
+
+	UE_LOG(LogTemp, Log, TEXT("Setting guard state from %d to %d"), (int32)GuardState, (int32)newState);
 
 	GuardState = newState;
 
@@ -90,6 +126,5 @@ void AFPSAIGuard::SetGuardState(EAIState newState)
 void AFPSAIGuard::Tick(float DeltaTime)
 {
 	Super::Tick(DeltaTime);
-
 }
 

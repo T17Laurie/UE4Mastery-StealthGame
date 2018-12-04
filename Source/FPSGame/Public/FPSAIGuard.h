@@ -7,11 +7,13 @@
 #include "FPSAIGuard.generated.h"
 
 class UPawnSensingComponent;
+class AFPSAIGuardController;
 
 UENUM(BlueprintType)
 enum class EAIState : uint8
 {
 	Idle,
+	Patrolling,
 	Suspcious,
 	Alerted
 };
@@ -32,6 +34,15 @@ protected:
 	UPROPERTY(VisibleAnywhere, Category = "Components")
 	UPawnSensingComponent* PawnSensingComp;
 
+	UPROPERTY(EditInstanceOnly, Category = "AI")
+	bool bPatrol;
+
+	UPROPERTY(EditInstanceOnly, Category = "AI", meta = (EditCondition = "bPatrol"))
+	TArray<AActor*>	NavTargets;
+
+	UPROPERTY(EditInstanceOnly, Category = "AI", meta = (EditCondition = "bPatrol"))
+	float PatrolWaitTime;
+
 	UFUNCTION()
 	void OnPawnSeen(APawn* SeenPawn);
 
@@ -46,6 +57,8 @@ protected:
 	FTimerHandle TimerHandle_ResetOrientation;
 
 	EAIState GuardState;
+
+	AFPSAIGuardController* GuardController;
 
 	void SetGuardState(EAIState newState);
 
