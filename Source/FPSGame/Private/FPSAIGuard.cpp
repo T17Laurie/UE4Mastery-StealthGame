@@ -7,6 +7,7 @@
 #include "Engine/TargetPoint.h"
 #include "FPSGameMode.h"
 #include "FPSAIGuardController.h"
+#include "Net/UnrealNetwork.h"
 
 #pragma optimize ("", off)
 
@@ -110,6 +111,11 @@ void AFPSAIGuard::ResetOrientation()
 	}
 }
 
+void AFPSAIGuard::OnRep_GuardState()
+{
+	OnStateChanged(GuardState);
+}
+
 void AFPSAIGuard::SetGuardState(EAIState newState)
 {
 	if (GuardState == newState)
@@ -119,7 +125,9 @@ void AFPSAIGuard::SetGuardState(EAIState newState)
 
 	GuardState = newState;
 
-	OnStateChanged(GuardState);
+	// SetGuardState() is only called on the server. The GuardState is replicated to the clients and OnRep_GuardState() is called on the clients.
+	// We need to also manually call OnRep_GuardState() here so that it gets run on the server too.
+	OnRep_GuardState();
 }
 
 // Called every frame
@@ -128,3 +136,10 @@ void AFPSAIGuard::Tick(float DeltaTime)
 	Super::Tick(DeltaTime);
 }
 
+// This function sets the replication rules for this actor.
+void AFPSAIGuard::GetLifetimeReplicatedProps(TArray<FLifetimeProperty>& OutLifetimeProps) const
+{
+	Super::GetLifetimeReplicatedProps(OutLifetimeProps);
+
+	DOREPLIFETIME(AFPSAIGuard, GuardState);
+}

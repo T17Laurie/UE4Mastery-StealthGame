@@ -56,7 +56,11 @@ protected:
 
 	FTimerHandle TimerHandle_ResetOrientation;
 
+	UPROPERTY(ReplicatedUsing=OnRep_GuardState)
 	EAIState GuardState;
+
+	UFUNCTION()
+	void OnRep_GuardState();			// Gets automatically called, on the client only, when GuardState changes.
 
 	AFPSAIGuardController* GuardController;
 
