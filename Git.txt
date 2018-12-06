@@ -20,6 +20,10 @@ Once all the changes files have been added to the staging environment you can ad
 git log
  - Shows the commit logs
 
+git diff
+git diff <filename>
+ - See what changes have been made
+
 To show the files contained within a commit:
  - "git show --stat --oneline HEAD"
  - "git show --name-only --oneline HEAD"
@@ -70,5 +74,31 @@ To delete a file from the repository but NOT delete it from the local file syste
 
 Don't forget to commit the staged deletion:
  - git commit -m "Deleted a file"
+
+.gitignore
+==========
+Use to indicate which files you don't want to track. This stops them showing up every time you do git status.
+Each subdirectory can have its own .gitignore file.
+
+You can also have a global ignore file (e.g. called .gitignore_global). You have to tell git about this global ignore file:
+"git config --global core.excludesfile ~/.gitignore_global
+
+Starting a new Git repository
+=============================
+See https://kbroman.org/github_tutorial/pages/init.html
+
+Create the local repository:
+ - Make a new folder, or cd into the folder that contains the files/project you want to track with git.
+ - "git init"
+ - Use "git add" to add the files to the staging area.
+ - Use "git commit" to commit them to HEAD.
+
+You now have a local repository. To also add it to GitHub:
+ - Go to GitHub and log in to your account.
+ - Click the "new repository" button. Don't select the option to initialise the repo with a README file.
+ - Click the "create repository" button.
+ - "git remote add origin git@github.com:username/new_repo" (GitHub should be showing instructions for this)
+ - "git push -u origin master"
+
 
 
