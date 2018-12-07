@@ -7,6 +7,7 @@ A commit is like a submited changelist.
 
 The staging environment (used to be called the index) represents the files that will be included in the next commit, much like a pending changelist.
  - "git add <file>" to stage a new/modified file for commit
+ - TIP: "git add <folder>" seems to add any changed files recurively within that folder (so "git add Source" will add Source\Private\MyClass.cpp without you needing to type the whole path).
  - add any other changed files that you want to submit (commit) at the same time
 
 Staged files are not in a commit yet!
@@ -58,7 +59,8 @@ Both git pull and git merge will try to auto-merge changes. If there are any con
 Before merging changes you can preview them with:
 - "git diff <source_branch> <target_branch>"
 
-To revert local changes:
+To revert local changes
+=======================
  - "git checkout -- <filename>"
 Changes already added to the index (staging environment), and new files, are kept.
 
